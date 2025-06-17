@@ -1,0 +1,106 @@
+const METAL = 0;
+const ANODE = 1;
+const ELECTROLYTE = 3;
+
+let cols = 30;
+let rows = 30;
+let cellSize = 20;
+let grid = [];
+
+let corrosionStarted = false;
+let startX = -1;
+let startY = -1;
+
+let inputX, inputY, button;
+
+function setup() {
+  createCanvas(cols * cellSize, rows * cellSize + 50);
+
+  // Инициализация сетки
+  for (let x = 0; x < cols; x++) {
+    grid[x] = [];
+    for (let y = 0; y < rows; y++) {
+      if (x === 0 || y === 0 || x === cols - 1 || y === rows - 1) {
+        grid[x][y] = ELECTROLYTE;
+      } else {
+        grid[x][y] = METAL;
+      }
+    }
+  }
+
+  // Создаем элементы ввода
+  inputX = createInput('15');
+  inputX.position(10, height - 40);
+  inputX.size(40);
+
+  inputY = createInput('15');
+  inputY.position(60, height - 40);
+  inputY.size(40);
+
+  button = createButton('Старт коррозии');
+  button.position(110, height - 40);
+  button.mousePressed(startCorrosion);
+}
+
+function draw() {
+  background(220);
+  drawGrid();
+
+  if (corrosionStarted) {
+    corrosionStep();
+  }
+
+  fill(0);
+  textSize(16);
+  text('X:', 10, height - 50);
+  text('Y:', 60, height - 50);
+}
+
+function drawGrid() {
+  noStroke();
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      if (grid[x][y] === METAL) fill(180);
+      else if (grid[x][y] === ANODE) fill(255, 0, 0);
+      else if (grid[x][y] === ELECTROLYTE) fill(0, 100, 200);
+      rect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
+  }
+}
+
+function startCorrosion() {
+  let x = int(inputX.value());
+  let y = int(inputY.value());
+  if (x > 0 && x < cols - 1 && y > 0 && y < rows - 1) {
+    startX = x;
+    startY = y;
+    grid[startX][startY] = ANODE;
+    corrosionStarted = true;
+  } else {
+    alert(`Введите координаты внутри сетки от 1 до ${cols - 2}`);
+  }
+}
+
+function corrosionStep() {
+  let newGrid = JSON.parse(JSON.stringify(grid));
+  for (let x = 1; x < cols - 1; x++) {
+    for (let y = 1; y < rows - 1; y++) {
+      if (grid[x][y] === ANODE) {
+        let neighbors = [
+          [x + 1, y],
+          [x - 1, y],
+          [x, y + 1],
+          [x, y - 1],
+        ];
+        neighbors.forEach(([nx, ny]) => {
+          if (grid[nx][ny] === METAL) {
+            if (random() < 0.03) { // 3% шанс перейти в ANODE
+              newGrid[nx][ny] = ANODE;
+            }
+          }
+        });
+      }
+    }
+  }
+  grid = newGrid;
+}
