@@ -32,6 +32,9 @@
 
 ![image](https://github.com/user-attachments/assets/9b564725-98c1-4f8d-aab0-a7fbcc62ef64)
 
+![Clipchamp-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/d3cd53ec-012d-4a2b-98b0-5a8a2f5bb7eb)
+
+
 # 4. Возможные улучшения модели
  1. Добавить пассивные зоны и реалистичную пассивацию.
  2. Ввести расчёт электрохимических параметров (потенциал, ионы, pH).
